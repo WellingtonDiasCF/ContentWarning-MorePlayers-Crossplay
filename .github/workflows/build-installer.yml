@@ -1,0 +1,29 @@
+name: Build installer
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Publish installer
+        run: dotnet publish src/Installer/HostOnlyLobby.Installer.csproj -c Release -r win-x64 -o artifacts/installer
+
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: HostOnlyLobby-Setup
+          path: artifacts/installer/HostOnlyLobby-Setup.exe
+          if-no-files-found: error
