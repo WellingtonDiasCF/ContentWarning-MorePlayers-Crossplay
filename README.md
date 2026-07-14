@@ -1,68 +1,104 @@
-# Content Warning — More Players + Crossplay
+# Content Warning — Mais jogadores com crossplay
 
-Expande o lobby do Content Warning para mais de quatro jogadores mantendo a entrada por código para PC e Xbox.
+**Português** · [English](README.en.md) · [Español](README.es.md)
 
-Somente quem cria a sala instala o mod. Os convidados entram normalmente e não precisam baixar nada.
+[![Versão 1.0.1](https://img.shields.io/badge/versão-1.0.1-6a6df0)](https://github.com/WellingtonDiasCF/ContentWarning-MorePlayers-Crossplay/releases/latest)
+[![Host only](https://img.shields.io/badge/instalação-somente%20o%20host-2f9e73)](https://github.com/WellingtonDiasCF/ContentWarning-MorePlayers-Crossplay/releases/latest)
+[![PC + Xbox](https://img.shields.io/badge/crossplay-PC%20%2B%20Xbox-107c10?logo=xbox)](https://github.com/WellingtonDiasCF/ContentWarning-MorePlayers-Crossplay/releases/latest)
+
+Crie salas de 5 a 16 jogadores no Content Warning e convide pessoas de PC ou Xbox pelo código normal da sala.
+
+**Somente o host do PC instala.** Os convidados não precisam baixar o mod.
 
 ## Download
 
 [**Baixar o instalador para Windows**](https://github.com/WellingtonDiasCF/ContentWarning-MorePlayers-Crossplay/releases/latest/download/HostOnlyLobby-Setup.exe)
 
-O instalador encontra o jogo pela Steam, deixa escolher entre 5 e 16 jogadores e configura tudo automaticamente. A opção padrão é 8.
+- Arquivo: `HostOnlyLobby-Setup.exe`
+- Versão atual: 1.0.1
+- SHA-256: `3CA71C7A1A4CA875EC98DE63A2C69474A7194D91E44164CBE33B1775C9DD1295`
 
-## Como instalar
+## Instalação rápida
 
-1. Baixe `HostOnlyLobby-Setup.exe` pelo link acima.
-2. Feche o Content Warning.
-3. Abra o instalador e confira a pasta detectada.
-4. Escolha o número máximo de jogadores e clique em **Instalar / Atualizar**.
-5. Abra o jogo pela Steam e crie a sala normalmente.
-6. Envie o código para os outros jogadores.
+1. O host deve fechar o Content Warning.
+2. Baixe e abra `HostOnlyLobby-Setup.exe`.
+3. Confira a pasta do jogo detectada pela Steam.
+4. Escolha o limite da sala, entre 5 e 16 jogadores.
+5. Clique em **Instalar / Atualizar**.
+6. Abra o jogo pela Steam e crie a sala normalmente.
 
-Se o Windows mostrar o aviso do SmartScreen, clique em **Mais informações** e depois em **Executar assim mesmo**. O arquivo não possui assinatura digital comercial; o código e o checksum de cada versão ficam publicados neste repositório.
+Não instale o mod nos PCs convidados. Não há instalação possível ou necessária no Xbox.
 
-## Antes de começar a partida
+## Como entrar e começar a partida
 
-Espere todos entrarem enquanto o grupo ainda está dentro da casa. Abra a porta somente depois que os cinco jogadores estiverem conectados.
+1. O host cria a sala e envia o código.
+2. Todos entram enquanto o grupo ainda está dentro da casa.
+3. Confirme que os cinco ou mais jogadores aparecem conectados.
+4. Só então o host abre a porta da casa.
 
-O jogo possui quatro camas. O mod mantém quatro atribuições e permite avançar quando quatro jogadores estiverem prontos. Se houver menos sobreviventes, todos os sobreviventes precisam estar prontos.
+Entrar depois que a porta foi aberta não é suportado nesta versão.
 
-## O que é instalado
+## Camas e passagem do dia
 
-- BepInEx 5.4.23.5;
-- CrossPatcher 1.0.0;
-- HostOnlyLobby 1.0.1.
+O jogo possui quatro camas. Para evitar erros de sincronização, o mod atribui somente essas quatro camas. Em um grupo com cinco ou mais jogadores, quatro pessoas prontas permitem avançar. Se houver menos de quatro sobreviventes, todos os sobreviventes precisam estar prontos.
 
-Os pacotes do BepInEx e CrossPatcher são baixados das páginas originais do Thunderstore e conferidos por SHA-256 antes da instalação. O instalador não usa Virality nem `ViralityDeprecatedSoIFixedIt`. Caso encontre uma DLL Virality antiga, ele a desativa e guarda uma cópia em `BepInEx\disabled-plugins`.
+## O que o instalador faz
+
+- Instala BepInEx 5.4.23.5.
+- Instala CrossPatcher 1.0.0.
+- Instala HostOnlyLobby 1.0.1.
+- Confere os downloads por SHA-256.
+- Desativa DLLs Virality conflitantes e as guarda em `BepInEx\disabled-plugins`.
+- Permite atualizar ou remover o HostOnlyLobby pelo mesmo executável.
+
+O instalador não usa Virality nem `ViralityDeprecatedSoIFixedIt`.
 
 ## Desinstalação
 
-Abra o mesmo instalador e clique em **Desinstalar**. Ele remove o HostOnlyLobby e mantém BepInEx/CrossPatcher, pois outros mods podem depender deles.
+Abra o instalador novamente, confira a pasta do jogo e clique em **Desinstalar**. O HostOnlyLobby e sua configuração serão removidos. BepInEx e CrossPatcher permanecem porque outros mods podem utilizá-los.
 
-## Limitações conhecidas
+## Solução de problemas
 
-- O mod foi validado localmente com as assemblies da versão 1.24.x do jogo.
-- Voz e sincronização entre PC e Xbox ainda dependem dos serviços do próprio jogo.
-- Atualizações do Content Warning podem exigir uma nova versão do mod.
-- Se o áudio do jogo falhar entre plataformas, use Discord ou uma party do Xbox.
+**O Xbox não encontra a sala**
 
-## Verificação realizada
+Confirme que CrossPatcher foi instalado, que o host abriu o jogo pela Steam e que todos estão usando a versão atual do Content Warning.
 
-O teste automatizado cobre 13 cenários de lobby, Photon, Steam, camas e transição de sono. A inicialização real pela Steam confirmou os sete patches do mod. O teste definitivo de rede ainda é uma partida com máquinas e consoles separados.
+**O quinto jogador não consegue entrar**
 
-## Compilar
+Execute o instalador novamente e escolha pelo menos 5 jogadores. Crie uma sala nova depois da instalação.
 
-O instalador requer o SDK do .NET 8:
+**A voz não funciona entre PC e Xbox**
+
+O áudio entre plataformas depende do próprio jogo. Use Discord ou uma party do Xbox caso a voz falhe.
+
+**O jogo atualizou e o mod parou**
+
+Consulte a [página de versões](https://github.com/WellingtonDiasCF/ContentWarning-MorePlayers-Crossplay/releases). Atualizações do jogo podem exigir uma nova compilação.
+
+## O que já foi validado
+
+- 13/13 testes simulados de lobby, Photon, Steam, camas e sono.
+- Instalação e remoção em pasta isolada.
+- Inicialização real pela Steam com 7/7 patches registrados.
+
+A comunicação real entre vários PCs e Xbox, incluindo voz e troca de cenas, ainda depende da infraestrutura do jogo e deve ser confirmada durante a partida.
+
+<details>
+<summary>Informações para desenvolvimento</summary>
+
+Para compilar o instalador com o SDK .NET 8:
 
 ```powershell
 dotnet publish src/Installer/HostOnlyLobby.Installer.csproj -c Release -r win-x64
 ```
 
-Para compilar a DLL do mod, defina `CONTENT_WARNING_DIR` com a pasta de uma instalação legítima do jogo e execute:
+Para compilar o plugin, defina `CONTENT_WARNING_DIR` com a pasta do jogo e execute:
 
 ```powershell
 dotnet build src/HostOnlyLobby/ContentWarningHostOnlyLobby.csproj -c Release
 ```
+
+</details>
 
 ## Créditos e licença
 
