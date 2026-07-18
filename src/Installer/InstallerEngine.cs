@@ -61,7 +61,7 @@ internal static class InstallerEngine
                 "plugins/CrossPatcher.dll",
                 Path.Combine(crossPatcherDirectory, "CrossPatcher.dll"));
 
-            progress?.Report("Instalando HostOnlyLobby 1.0.1...");
+            progress?.Report("Instalando HostOnlyLobby 1.1.0...");
             string hostOnlyDirectory = Path.Combine(pluginsDirectory, "HostOnlyLobby");
             Directory.CreateDirectory(hostOnlyDirectory);
             string pluginPath = Path.Combine(hostOnlyDirectory, "ContentWarningHostOnlyLobby.dll");
@@ -213,7 +213,7 @@ internal static class InstallerEngine
     private static async Task DownloadAndVerifyAsync(string url, string destination, string expectedSha256)
     {
         using var client = new HttpClient { Timeout = TimeSpan.FromMinutes(2) };
-        client.DefaultRequestHeaders.UserAgent.ParseAdd("HostOnlyLobby-Setup/1.0.1");
+        client.DefaultRequestHeaders.UserAgent.ParseAdd("HostOnlyLobby-Setup/1.1.0");
         using HttpResponseMessage response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
         response.EnsureSuccessStatusCode();
         await using (Stream source = await response.Content.ReadAsStreamAsync())
@@ -379,13 +379,22 @@ internal static class InstallerEngine
         Directory.CreateDirectory(configDirectory);
         string configPath = Path.Combine(configDirectory, "local.contentwarning.hostonlylobby.cfg");
         string contents =
-            "## Settings file for HostOnlyLobby v1.0.1\r\n" +
+            "## Settings file for HostOnlyLobby v1.1.0\r\n" +
             "## Only the host needs this plugin.\r\n\r\n" +
             "[Lobby]\r\n\r\n" +
             "## Maximum lobby size. Valid range: 5 to 16.\r\n" +
             "# Setting type: Int32\r\n" +
             "# Default value: 8\r\n" +
-            $"MaxPlayers = {maxPlayers}\r\n";
+            $"MaxPlayers = {maxPlayers}\r\n\r\n" +
+            "[Interface]\r\n\r\n" +
+            "## Show a status card when the host enters a room or loads a world.\r\n" +
+            "# Setting type: Boolean\r\n" +
+            "# Default value: true\r\n" +
+            "ShowStatusIndicator = true\r\n\r\n" +
+            "## How many seconds the status card remains visible. Valid range: 3 to 30.\r\n" +
+            "# Setting type: Single\r\n" +
+            "# Default value: 12\r\n" +
+            "IndicatorSeconds = 12\r\n";
         File.WriteAllText(configPath, contents, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
     }
 }

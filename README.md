@@ -2,7 +2,7 @@
 
 **Português** · [English](README.en.md) · [Español](README.es.md)
 
-[![Versão 1.0.1](https://img.shields.io/badge/versão-1.0.1-6a6df0)](https://github.com/WellingtonDiasCF/ContentWarning-MorePlayers-Crossplay/releases/latest)
+[![Versão 1.1.0](https://img.shields.io/badge/versão-1.1.0-6a6df0)](https://github.com/WellingtonDiasCF/ContentWarning-MorePlayers-Crossplay/releases/latest)
 [![Host only](https://img.shields.io/badge/instalação-somente%20o%20host-2f9e73)](https://github.com/WellingtonDiasCF/ContentWarning-MorePlayers-Crossplay/releases/latest)
 [![PC + Xbox](https://img.shields.io/badge/crossplay-PC%20%2B%20Xbox-107c10?logo=xbox)](https://github.com/WellingtonDiasCF/ContentWarning-MorePlayers-Crossplay/releases/latest)
 
@@ -15,8 +15,8 @@ Crie salas de 5 a 16 jogadores no Content Warning e convide pessoas de PC ou Xbo
 [**Baixar o instalador para Windows**](https://github.com/WellingtonDiasCF/ContentWarning-MorePlayers-Crossplay/releases/latest/download/HostOnlyLobby-Setup.exe)
 
 - Arquivo: `HostOnlyLobby-Setup.exe`
-- Versão atual: 1.0.1
-- SHA-256: `3CA71C7A1A4CA875EC98DE63A2C69474A7194D91E44164CBE33B1775C9DD1295`
+- Versão atual: 1.1.0
+- SHA-256: `B8E0BB7D438BF11206419ED1EA243CAC6024BF0B83C1513A75B8DD8AB1ABE5DE`
 
 ## Instalação rápida
 
@@ -28,6 +28,17 @@ Crie salas de 5 a 16 jogadores no Content Warning e convide pessoas de PC ou Xbo
 6. Abra o jogo pela Steam e crie a sala normalmente.
 
 Não instale o mod nos PCs convidados. Não há instalação possível ou necessária no Xbox.
+
+## Indicador na tela
+
+Ao entrar na sala e sempre que um novo mundo é carregado, o host vê por 12 segundos um cartão no canto superior direito:
+
+```text
+HOSTONLYLOBBY ATIVO
+Sala do host • até 8 jogadores
+```
+
+O aviso confirma que o plugin está funcionando e mostra o limite configurado. Ele aparece somente para o host. É possível desativá-lo ou mudar sua duração em `BepInEx\config\local.contentwarning.hostonlylobby.cfg`.
 
 ## Como entrar e começar a partida
 
@@ -46,7 +57,7 @@ O jogo possui quatro camas. Para evitar erros de sincronização, o mod atribui 
 
 - Instala BepInEx 5.4.23.5.
 - Instala CrossPatcher 1.0.0.
-- Instala HostOnlyLobby 1.0.1.
+- Instala HostOnlyLobby 1.1.0.
 - Confere os downloads por SHA-256.
 - Desativa DLLs Virality conflitantes e as guarda em `BepInEx\disabled-plugins`.
 - Permite atualizar ou remover o HostOnlyLobby pelo mesmo executável.
