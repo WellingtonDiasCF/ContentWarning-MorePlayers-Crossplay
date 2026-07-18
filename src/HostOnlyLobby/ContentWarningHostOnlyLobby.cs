@@ -7,6 +7,7 @@ using HarmonyLib;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using DefaultNamespace;
 
 [assembly: IgnoresAccessChecksTo("Assembly-CSharp")]
@@ -28,12 +29,20 @@ namespace ContentWarningHostOnlyLobby
     {
         public const string PluginGuid = "local.contentwarning.hostonlylobby";
         public const string PluginName = "HostOnlyLobby";
-        public const string PluginVersion = "1.0.1";
+        public const string PluginVersion = "1.1.0";
 
         private Harmony? _harmony;
+        private bool _wasInHostRoom;
+        private int _lastSceneHandle = -1;
+        private float _indicatorVisibleFrom;
+        private float _indicatorVisibleUntil;
+        private GUIStyle? _indicatorTitleStyle;
+        private GUIStyle? _indicatorDetailStyle;
 
         internal static int MaxPlayers { get; private set; } = 8;
         internal static int RequiredSleepers { get; private set; } = 4;
+        internal static bool ShowStatusIndicator { get; private set; } = true;
+        internal static float IndicatorSeconds { get; private set; } = 12f;
 
         private void Awake()
         {
@@ -42,21 +51,102 @@ namespace ContentWarningHostOnlyLobby
                 "MaxPlayers",
                 8,
                 "Maximum lobby size. Keep between 5 and 16 for cross-platform testing.");
+            ConfigEntry<bool> showStatusIndicator = Config.Bind(
+                "Interface",
+                "ShowStatusIndicator",
+                true,
+                "Show a status card when the host enters a room or loads a world.");
+            ConfigEntry<float> indicatorSeconds = Config.Bind(
+                "Interface",
+                "IndicatorSeconds",
+                12f,
+                "How many seconds the status card remains visible. Keep between 3 and 30.");
 
             MaxPlayers = Clamp(maxPlayers.Value, 5, 16);
             RequiredSleepers = Math.Min(4, MaxPlayers);
+            ShowStatusIndicator = showStatusIndicator.Value;
+            IndicatorSeconds = Mathf.Clamp(indicatorSeconds.Value, 3f, 30f);
 
             _harmony = new Harmony(PluginGuid);
             _harmony.PatchAll();
 
             Logger.LogInfo($"Host-only lobby patches active. MaxPlayers={MaxPlayers}. Clients do not need this plugin.");
             Logger.LogInfo("Late joining is intentionally disabled; have everyone join before opening the house door.");
+            Logger.LogInfo($"Status indicator enabled: {ShowStatusIndicator} ({IndicatorSeconds:0.#} seconds).");
             RunStartupDiagnostics();
+        }
+
+        private void Update()
+        {
+            bool inHostRoom = PhotonNetwork.InRoom && PhotonNetwork.IsMasterClient;
+            int sceneHandle = SceneManager.GetActiveScene().handle;
+
+            if (ShowStatusIndicator && inHostRoom &&
+                (!_wasInHostRoom || sceneHandle != _lastSceneHandle))
+            {
+                _indicatorVisibleFrom = Time.realtimeSinceStartup + 1f;
+                _indicatorVisibleUntil = _indicatorVisibleFrom + IndicatorSeconds;
+                Logger.LogInfo($"Status indicator scheduled in scene '{SceneManager.GetActiveScene().name}'.");
+            }
+
+            _wasInHostRoom = inHostRoom;
+            _lastSceneHandle = sceneHandle;
+        }
+
+        private void OnGUI()
+        {
+            if (!ShowStatusIndicator ||
+                Time.realtimeSinceStartup < _indicatorVisibleFrom ||
+                Time.realtimeSinceStartup > _indicatorVisibleUntil)
+            {
+                return;
+            }
+
+            EnsureIndicatorStyles();
+
+            float width = Mathf.Min(340f, Screen.width - 32f);
+            var background = new Rect(Screen.width - width - 16f, 18f, width, 72f);
+            var accent = new Rect(background.x, background.y, 5f, background.height);
+            var title = new Rect(background.x + 18f, background.y + 10f, background.width - 28f, 24f);
+            var detail = new Rect(background.x + 18f, background.y + 36f, background.width - 28f, 24f);
+
+            Color previousColor = GUI.color;
+            GUI.color = new Color(0.055f, 0.071f, 0.102f, 0.94f);
+            GUI.DrawTexture(background, Texture2D.whiteTexture);
+            GUI.color = new Color(0.25f, 0.88f, 0.55f, 1f);
+            GUI.DrawTexture(accent, Texture2D.whiteTexture);
+            GUI.color = Color.white;
+            GUI.Label(title, "HOSTONLYLOBBY ATIVO", _indicatorTitleStyle);
+            GUI.Label(detail, $"Sala do host  •  até {MaxPlayers} jogadores", _indicatorDetailStyle);
+            GUI.color = previousColor;
         }
 
         private void OnDestroy()
         {
             _harmony?.UnpatchSelf();
+        }
+
+        private void EnsureIndicatorStyles()
+        {
+            if (_indicatorTitleStyle != null && _indicatorDetailStyle != null)
+            {
+                return;
+            }
+
+            _indicatorTitleStyle = new GUIStyle(GUI.skin.label)
+            {
+                alignment = TextAnchor.MiddleLeft,
+                fontSize = 15,
+                fontStyle = FontStyle.Bold
+            };
+            _indicatorTitleStyle.normal.textColor = Color.white;
+
+            _indicatorDetailStyle = new GUIStyle(GUI.skin.label)
+            {
+                alignment = TextAnchor.MiddleLeft,
+                fontSize = 12
+            };
+            _indicatorDetailStyle.normal.textColor = new Color(0.78f, 0.82f, 0.88f, 1f);
         }
 
         private static int Clamp(int value, int minimum, int maximum)

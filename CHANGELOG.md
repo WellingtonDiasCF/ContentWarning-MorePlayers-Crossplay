@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.0
+
+- Added an on-screen status card when the host enters a room or loads a world.
+- The card shows that HostOnlyLobby is active and displays the configured player limit.
+- Added `ShowStatusIndicator` and `IndicatorSeconds` interface settings.
+- Delayed the card until the world is visible so loading screens do not consume its display time.
+
 ## 1.0.1
 
 - Added startup diagnostics for all seven host-side patches.

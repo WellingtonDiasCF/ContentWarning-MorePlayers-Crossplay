@@ -6,7 +6,7 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <AssemblyName>ContentWarningHostOnlyLobby</AssemblyName>
     <RootNamespace>ContentWarningHostOnlyLobby</RootNamespace>
-    <Version>1.0.1</Version>
+    <Version>1.1.0</Version>
     <Deterministic>true</Deterministic>
     <GameDir Condition="'$(GameDir)' == '' and '$(CONTENT_WARNING_DIR)' != ''">$(CONTENT_WARNING_DIR)</GameDir>
     <GameDir Condition="'$(GameDir)' == ''">C:\Program Files (x86)\Steam\steamapps\common\Content Warning</GameDir>
@@ -20,6 +20,8 @@
     <Reference Include="PhotonRealtime" HintPath="$(GameDir)\Content Warning_Data\Managed\PhotonRealtime.dll" Private="false" />
     <Reference Include="Photon3Unity3D" HintPath="$(GameDir)\Content Warning_Data\Managed\Photon3Unity3D.dll" Private="false" />
     <Reference Include="UnityEngine.CoreModule" HintPath="$(GameDir)\Content Warning_Data\Managed\UnityEngine.CoreModule.dll" Private="false" />
+    <Reference Include="UnityEngine.IMGUIModule" HintPath="$(GameDir)\Content Warning_Data\Managed\UnityEngine.IMGUIModule.dll" Private="false" />
+    <Reference Include="UnityEngine.TextRenderingModule" HintPath="$(GameDir)\Content Warning_Data\Managed\UnityEngine.TextRenderingModule.dll" Private="false" />
     <Reference Include="UnityEngine" HintPath="$(GameDir)\Content Warning_Data\Managed\UnityEngine.dll" Private="false" />
   </ItemGroup>
 </Project>

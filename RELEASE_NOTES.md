@@ -1,35 +1,36 @@
-# More Players + Crossplay 1.0.1
+# More Players + Crossplay 1.1.0
 
-Primeira versão pública com instalador automático para Windows.
+Esta versão adiciona uma confirmação visual para o host.
 
-## Instalação rápida
+## Novo indicador
+
+Ao entrar na sala ou carregar um novo mundo, aparece no canto superior direito:
+
+```text
+HOSTONLYLOBBY ATIVO
+Sala do host • até 8 jogadores
+```
+
+O cartão permanece por 12 segundos, aparece somente para o host e mostra o limite configurado. A exibição e a duração podem ser alteradas no arquivo de configuração do plugin.
+
+## Instalação
 
 1. Baixe `HostOnlyLobby-Setup.exe` nos arquivos desta versão.
 2. Feche o Content Warning.
-3. Abra o instalador, escolha o número de jogadores e clique em **Instalar / Atualizar**.
-4. Abra o jogo pela Steam e crie uma sala.
+3. Execute o instalador e clique em **Instalar / Atualizar**.
+4. Abra o jogo pela Steam e crie a sala normalmente.
 
 Somente o host instala. Os convidados de PC e Xbox entram pelo código normal.
 
-## Incluído
-
-- detecção automática da pasta da Steam;
-- lobby configurável de 5 a 16 jogadores;
-- download e verificação de BepInEx 5.4.23.5 e CrossPatcher 1.0.0;
-- desativação segura de DLLs Virality conflitantes;
-- botão de desinstalação;
-- executável auto-suficiente, sem exigir instalação do .NET.
-
 ## Validação
 
+- indicador confirmado visualmente dentro de uma sala hospedada;
+- versão 1.1.0 carregada pelo BepInEx com 7/7 patches registrados;
 - 13/13 testes simulados aprovados;
-- instalação e desinstalação testadas em pasta isolada;
-- 7/7 patches confirmados ao iniciar o jogo pela Steam.
+- instalação e desinstalação verificadas em pasta isolada.
 
-Todos devem entrar antes de o host abrir a porta da casa. Voz e sincronização entre PC/Xbox continuam dependendo dos serviços do próprio jogo.
+Todos devem entrar antes de o host abrir a porta da casa. Voz e sincronização entre PC/Xbox continuam dependendo dos serviços do jogo.
 
 ## SHA-256
 
-`HostOnlyLobby-Setup.exe`
-
-`3CA71C7A1A4CA875EC98DE63A2C69474A7194D91E44164CBE33B1775C9DD1295`
+`B8E0BB7D438BF11206419ED1EA243CAC6024BF0B83C1513A75B8DD8AB1ABE5DE`
