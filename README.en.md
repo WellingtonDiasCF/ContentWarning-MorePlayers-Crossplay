@@ -2,21 +2,21 @@
 
 [Português](README.md) · **English** · [Español](README.es.md)
 
-[![Version 1.1.0](https://img.shields.io/badge/version-1.1.0-6a6df0)](https://github.com/WellingtonDiasCF/ContentWarning-MorePlayers-Crossplay/releases/latest)
-[![Host only](https://img.shields.io/badge/install-host%20only-2f9e73)](https://github.com/WellingtonDiasCF/ContentWarning-MorePlayers-Crossplay/releases/latest)
+[![Version 1.2.0](https://img.shields.io/badge/version-1.2.0-6a6df0)](https://github.com/WellingtonDiasCF/ContentWarning-MorePlayers-Crossplay/releases/latest)
+[![Installation](https://img.shields.io/badge/install-host%20%2B%20extra%20PC-2f9e73)](https://github.com/WellingtonDiasCF/ContentWarning-MorePlayers-Crossplay/releases/latest)
 [![PC + Xbox](https://img.shields.io/badge/crossplay-PC%20%2B%20Xbox-107c10?logo=xbox)](https://github.com/WellingtonDiasCF/ContentWarning-MorePlayers-Crossplay/releases/latest)
 
 Create Content Warning lobbies for 5 to 16 players and invite PC or Xbox guests with the normal room code.
 
-**Only the PC host installs the mod.** Guests do not need to download anything.
+The host controls the expanded lobby. To fix a fifth player's spawn, any PC occupying slot five or later must also install the same package. Nothing is installed on Xbox.
 
 ## Download
 
 [**Download the Windows installer**](https://github.com/WellingtonDiasCF/ContentWarning-MorePlayers-Crossplay/releases/latest/download/HostOnlyLobby-Setup.exe)
 
 - File: `HostOnlyLobby-Setup.exe`
-- Current version: 1.1.0
-- SHA-256: `B8E0BB7D438BF11206419ED1EA243CAC6024BF0B83C1513A75B8DD8AB1ABE5DE`
+- Current version: 1.2.0
+- SHA-256: `7E7EC9AB2793F53CB7CB288E985BEDB700FBD9DCE7CBB8A7691290462F1EFB19`
 
 ## Quick installation
 
@@ -27,7 +27,18 @@ Create Content Warning lobbies for 5 to 16 players and invite PC or Xbox guests 
 5. Click **Instalar / Atualizar**.
 6. Launch the game through Steam and create a room normally.
 
-Do not install the mod on guest PCs. No installation is possible or required on Xbox.
+For up to four people, only the host needs it. For a group with two PCs and three Xbox consoles, run the same installer on both PCs.
+
+## Group with 2 PCs and 3 Xbox consoles
+
+Use this join order:
+
+1. The PC host creates the room.
+2. The three Xbox players join with the room code.
+3. The second PC, with the mod installed, joins last.
+4. Everyone confirms they are inside the house before opening the door.
+
+Each device calculates its own spawn, and the game only provides four original indices. Version 1.2.0 makes the second PC reuse a valid point. The fix also covers returning to the surface inside the dive bell and spawning at the hospital. Underground scenes already use a shared spawn point.
 
 ## On-screen indicator
 
@@ -53,11 +64,13 @@ Joining after the door has been opened is not supported in this version.
 
 The game has four beds. To reduce synchronization errors, the mod only assigns those four beds. In a group of five or more, four ready players can advance the day. If fewer than four players are alive, every survivor must be ready.
 
+The beds and the room's visual size are not expanded: scene objects created only on the host would not appear correctly on Xbox.
+
 ## What the installer does
 
 - Installs BepInEx 5.4.23.5.
 - Installs CrossPatcher 1.0.0.
-- Installs HostOnlyLobby 1.1.0.
+- Installs HostOnlyLobby 1.2.0.
 - Verifies dependency downloads with SHA-256.
 - Disables conflicting Virality DLLs and stores them in `BepInEx\disabled-plugins`.
 - Updates or removes HostOnlyLobby using the same executable.
@@ -78,6 +91,10 @@ Confirm that CrossPatcher was installed, the host launched the game through Stea
 
 Run the installer again and select at least 5 players. Create a new room after installation.
 
+**The fifth player floats outside the house**
+
+That device occupied an extra local spawn index without the compatibility fix. With two PCs and three Xbox consoles, install the mod on the second PC and have all three Xbox players join before it. Then create a new room.
+
 **Voice chat does not work between PC and Xbox**
 
 Cross-platform voice depends on the game. Use Discord or an Xbox party if it fails.
@@ -88,9 +105,9 @@ Check the [Releases page](https://github.com/WellingtonDiasCF/ContentWarning-Mor
 
 ## Validation
 
-- 13/13 simulated tests for lobby, Photon, Steam, beds, and sleep logic.
+- 19/19 simulated tests for lobby, Photon, Steam, beds, sleep, and spawn remapping.
 - Installation and removal tested in an isolated folder.
-- A real Steam launch confirmed all 7/7 patches.
+- A real Steam launch confirmed all 8/8 patches.
 
 Communication between multiple PCs and Xbox consoles, including voice and scene transitions, still depends on the game's infrastructure and must be confirmed in a real session.
 

@@ -41,7 +41,7 @@ internal sealed class InstallerForm : Form
             AutoSize = true,
             Location = new Point(31, 63),
             ForeColor = Color.FromArgb(205, 210, 220),
-            Text = "Lobby maior no Content Warning — somente o host instala"
+            Text = "Lobby maior no Content Warning — compatível com PC e Xbox"
         };
         header.Controls.Add(title);
         header.Controls.Add(subtitle);
@@ -76,7 +76,7 @@ internal sealed class InstallerForm : Form
             AutoSize = true,
             Location = new Point(30, 240),
             ForeColor = Color.FromArgb(85, 89, 98),
-            Text = "Os convidados entram pelo código normal. PC e Xbox não precisam instalar nada."
+            Text = "5 jogadores: host e segundo PC instalam; os 3 Xbox entram antes do segundo PC."
         };
 
         _installButton.SetBounds(30, 280, 178, 42);

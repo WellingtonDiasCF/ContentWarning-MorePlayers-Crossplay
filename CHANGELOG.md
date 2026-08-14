@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.0
+
+- Added safe local spawn remapping for players in slots 5 and later.
+- Covered the initial house, surface dive-bell return, and hospital spawn arrays.
+- Documented the supported join order for a group with two PCs and three Xbox consoles.
+- Clarified that the game keeps four physical beds and only four players need to sleep.
+- Expanded the simulation suite to validate the real private-field patch against the installed game assembly.
+
 ## 1.1.0
 
 - Added an on-screen status card when the host enters a room or loads a world.

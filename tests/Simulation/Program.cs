@@ -66,6 +66,11 @@ Check("three of five not enough", !(bool)CallRule("EnoughPlayersReady", 5, 3)!, 
 Check("four of five enough", (bool)CallRule("EnoughPlayersReady", 5, 4)!, "four beds can advance a five-player group");
 Check("three surviving players", (bool)CallRule("EnoughPlayersReady", 3, 3)!, "all three survivors can advance");
 Check("empty group cannot advance", !(bool)CallRule("EnoughPlayersReady", 0, 0)!, "zero players remains false");
+Check("host keeps spawn zero", (int)CallRule("SafeSpawnIndex", 0, 4, 4)! == 0, "host remains on its dedicated spawn");
+Check("fourth client reuses safe spawn", (int)CallRule("SafeSpawnIndex", 4, 4, 4)! == 1, "fifth player reuses vanilla client spawn 1");
+Check("fifth client rotates spawn", (int)CallRule("SafeSpawnIndex", 5, 4, 4)! == 2, "sixth player reuses vanilla client spawn 2");
+Check("smaller array controls mapping", (int)CallRule("SafeSpawnIndex", 4, 6, 4)! == 1, "mapping respects the smaller serialized array");
+Check("single spawn fallback", (int)CallRule("SafeSpawnIndex", 7, 1, 1)! == 0, "single-point scenes safely fall back to spawn zero");
 
 Type roomOptionsType = RequiredType(
     AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.Combine(managedDirectory, "PhotonRealtime.dll")),
@@ -91,6 +96,26 @@ richPresencePrefix.Invoke(null, explicitPresence);
 Check("explicit larger presence preserved", (int)explicitPresence[0]! == 12, $"advertised maximum remains {explicitPresence[0]}");
 
 Assembly gameAssembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.Combine(managedDirectory, "Assembly-CSharp.dll"));
+Type spawnHandlerType = RequiredType(gameAssembly, "SpawnHandler");
+object spawnHandler = RuntimeHelpers.GetUninitializedObject(spawnHandlerType);
+FieldInfo localSpawnIndexField = spawnHandlerType.GetField("m_LocalSpawnIndex", BindingFlags.Instance | BindingFlags.NonPublic)
+    ?? throw new MissingFieldException(spawnHandlerType.FullName, "m_LocalSpawnIndex");
+FieldInfo houseSpawnsField = spawnHandlerType.GetField("m_HouseSpawns", BindingFlags.Instance | BindingFlags.NonPublic)
+    ?? throw new MissingFieldException(spawnHandlerType.FullName, "m_HouseSpawns");
+FieldInfo diveBellSpawnsField = spawnHandlerType.GetField("m_DiveBellSpawns", BindingFlags.Instance | BindingFlags.NonPublic)
+    ?? throw new MissingFieldException(spawnHandlerType.FullName, "m_DiveBellSpawns");
+Type transformType = RequiredType(
+    AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.Combine(managedDirectory, "UnityEngine.CoreModule.dll")),
+    "UnityEngine.Transform");
+houseSpawnsField.SetValue(spawnHandler, Array.CreateInstance(transformType, 4));
+diveBellSpawnsField.SetValue(spawnHandler, Array.CreateInstance(transformType, 4));
+localSpawnIndexField.SetValue(spawnHandler, 4);
+Type spawnPatch = RequiredType(plugin, "ContentWarningHostOnlyLobby.SpawnHandlerPatches");
+MethodInfo spawnIndexPostfix = spawnPatch.GetMethod("FindLocalSpawnIndexPostfix", BindingFlags.Static | BindingFlags.NonPublic)!;
+spawnIndexPostfix.Invoke(null, new[] { spawnHandler });
+Check("spawn patch remaps serialized slot", Convert.ToInt32(localSpawnIndexField.GetValue(spawnHandler)) == 1,
+    "fifth local player is redirected before SpawnLocalPlayer reads the arrays");
+
 Type steamLobbyType = RequiredType(gameAssembly, "SteamLobbyHandler");
 object steamLobby = RuntimeHelpers.GetUninitializedObject(steamLobbyType);
 FieldInfo steamMaximumField = steamLobbyType.GetField("m_MaxPlayers", BindingFlags.Instance | BindingFlags.NonPublic)
