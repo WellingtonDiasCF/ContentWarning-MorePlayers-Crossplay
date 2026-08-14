@@ -61,7 +61,7 @@ internal static class InstallerEngine
                 "plugins/CrossPatcher.dll",
                 Path.Combine(crossPatcherDirectory, "CrossPatcher.dll"));
 
-            progress?.Report("Instalando HostOnlyLobby 1.1.0...");
+            progress?.Report("Instalando HostOnlyLobby 1.2.0...");
             string hostOnlyDirectory = Path.Combine(pluginsDirectory, "HostOnlyLobby");
             Directory.CreateDirectory(hostOnlyDirectory);
             string pluginPath = Path.Combine(hostOnlyDirectory, "ContentWarningHostOnlyLobby.dll");
@@ -213,7 +213,7 @@ internal static class InstallerEngine
     private static async Task DownloadAndVerifyAsync(string url, string destination, string expectedSha256)
     {
         using var client = new HttpClient { Timeout = TimeSpan.FromMinutes(2) };
-        client.DefaultRequestHeaders.UserAgent.ParseAdd("HostOnlyLobby-Setup/1.1.0");
+        client.DefaultRequestHeaders.UserAgent.ParseAdd("HostOnlyLobby-Setup/1.2.0");
         using HttpResponseMessage response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
         response.EnsureSuccessStatusCode();
         await using (Stream source = await response.Content.ReadAsStreamAsync())
@@ -379,8 +379,8 @@ internal static class InstallerEngine
         Directory.CreateDirectory(configDirectory);
         string configPath = Path.Combine(configDirectory, "local.contentwarning.hostonlylobby.cfg");
         string contents =
-            "## Settings file for HostOnlyLobby v1.1.0\r\n" +
-            "## Only the host needs this plugin.\r\n\r\n" +
+            "## Settings file for HostOnlyLobby v1.2.0\r\n" +
+            "## Install on the host and on any extra PC occupying local slot 5 or later.\r\n\r\n" +
             "[Lobby]\r\n\r\n" +
             "## Maximum lobby size. Valid range: 5 to 16.\r\n" +
             "# Setting type: Int32\r\n" +

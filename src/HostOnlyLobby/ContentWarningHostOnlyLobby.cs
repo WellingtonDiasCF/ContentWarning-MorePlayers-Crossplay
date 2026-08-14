@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using BepInEx;
 using BepInEx.Configuration;
+using BepInEx.Logging;
 using HarmonyLib;
 using Photon.Pun;
 using Photon.Realtime;
@@ -29,7 +30,7 @@ namespace ContentWarningHostOnlyLobby
     {
         public const string PluginGuid = "local.contentwarning.hostonlylobby";
         public const string PluginName = "HostOnlyLobby";
-        public const string PluginVersion = "1.1.0";
+        public const string PluginVersion = "1.2.0";
 
         private Harmony? _harmony;
         private bool _wasInHostRoom;
@@ -43,9 +44,11 @@ namespace ContentWarningHostOnlyLobby
         internal static int RequiredSleepers { get; private set; } = 4;
         internal static bool ShowStatusIndicator { get; private set; } = true;
         internal static float IndicatorSeconds { get; private set; } = 12f;
+        internal static ManualLogSource? Log { get; private set; }
 
         private void Awake()
         {
+            Log = Logger;
             ConfigEntry<int> maxPlayers = Config.Bind(
                 "Lobby",
                 "MaxPlayers",
@@ -70,8 +73,9 @@ namespace ContentWarningHostOnlyLobby
             _harmony = new Harmony(PluginGuid);
             _harmony.PatchAll();
 
-            Logger.LogInfo($"Host-only lobby patches active. MaxPlayers={MaxPlayers}. Clients do not need this plugin.");
+            Logger.LogInfo($"Lobby patches active. MaxPlayers={MaxPlayers}. Extra PC clients in slots 5+ also need this plugin for safe local spawning.");
             Logger.LogInfo("Late joining is intentionally disabled; have everyone join before opening the house door.");
+            Logger.LogInfo("Spawn compatibility is active on this device for house, dive-bell return, and hospital spawns.");
             Logger.LogInfo($"Status indicator enabled: {ShowStatusIndicator} ({IndicatorSeconds:0.#} seconds).");
             RunStartupDiagnostics();
         }
@@ -124,6 +128,7 @@ namespace ContentWarningHostOnlyLobby
         private void OnDestroy()
         {
             _harmony?.UnpatchSelf();
+            Log = null;
         }
 
         private void EnsureIndicatorStyles()
@@ -156,6 +161,11 @@ namespace ContentWarningHostOnlyLobby
             return value;
         }
 
+        internal static void LogSpawnRemap(int originalIndex, int safeIndex)
+        {
+            Log?.LogInfo($"Spawn compatibility remapped local slot {originalIndex} to vanilla spawn {safeIndex}.");
+        }
+
         private void RunStartupDiagnostics()
         {
             MethodBase[] targets =
@@ -169,7 +179,8 @@ namespace ContentWarningHostOnlyLobby
                 AccessTools.Method(typeof(RichPresenceHandler), nameof(RichPresenceHandler.SetGroupSize)),
                 AccessTools.Method(typeof(BedBoss), "OnPlayerJoined"),
                 AccessTools.Method(typeof(PlayerHandler), "AllPlayersInBed"),
-                AccessTools.Method(typeof(PlayerHandler), nameof(PlayerHandler.AllPlayersAsleep))
+                AccessTools.Method(typeof(PlayerHandler), nameof(PlayerHandler.AllPlayersAsleep)),
+                AccessTools.Method(typeof(SpawnHandler), "FindLocalSpawnIndex")
             };
 
             int patched = 0;
@@ -230,6 +241,63 @@ namespace ContentWarningHostOnlyLobby
         {
             int required = Math.Min(HostOnlyLobbyPlugin.RequiredSleepers, alivePlayers);
             return required > 0 && readyPlayers >= required;
+        }
+
+        internal static int SafeSpawnIndex(int originalIndex, int houseSpawnCount, int diveBellSpawnCount)
+        {
+            if (originalIndex <= 0)
+            {
+                return 0;
+            }
+
+            int spawnCount = Math.Min(houseSpawnCount, diveBellSpawnCount);
+            if (spawnCount <= 1)
+            {
+                return 0;
+            }
+
+            // Spawn zero remains exclusive to the host. Extra clients rotate
+            // through the remaining vanilla points instead of indexing past
+            // the serialized arrays and appearing outside the map.
+            return 1 + ((originalIndex - 1) % (spawnCount - 1));
+        }
+    }
+
+    [HarmonyPatch(typeof(SpawnHandler))]
+    [HarmonyPriority(Priority.First)]
+    internal static class SpawnHandlerPatches
+    {
+        private static readonly FieldInfo LocalSpawnIndexField =
+            typeof(SpawnHandler).GetField("m_LocalSpawnIndex", BindingFlags.Instance | BindingFlags.NonPublic)
+            ?? throw new MissingFieldException(typeof(SpawnHandler).FullName, "m_LocalSpawnIndex");
+
+        private static readonly FieldInfo HouseSpawnsField =
+            typeof(SpawnHandler).GetField("m_HouseSpawns", BindingFlags.Instance | BindingFlags.NonPublic)
+            ?? throw new MissingFieldException(typeof(SpawnHandler).FullName, "m_HouseSpawns");
+
+        private static readonly FieldInfo DiveBellSpawnsField =
+            typeof(SpawnHandler).GetField("m_DiveBellSpawns", BindingFlags.Instance | BindingFlags.NonPublic)
+            ?? throw new MissingFieldException(typeof(SpawnHandler).FullName, "m_DiveBellSpawns");
+
+        [HarmonyPostfix]
+        [HarmonyPatch("FindLocalSpawnIndex")]
+        private static void FindLocalSpawnIndexPostfix(SpawnHandler __instance)
+        {
+            int originalIndex = (int)LocalSpawnIndexField.GetValue(__instance);
+            var houseSpawns = (Transform[]?)HouseSpawnsField.GetValue(__instance);
+            var diveBellSpawns = (Transform[]?)DiveBellSpawnsField.GetValue(__instance);
+            int safeIndex = HostOnlyLobbyRules.SafeSpawnIndex(
+                originalIndex,
+                houseSpawns?.Length ?? 0,
+                diveBellSpawns?.Length ?? 0);
+
+            if (safeIndex == originalIndex)
+            {
+                return;
+            }
+
+            LocalSpawnIndexField.SetValue(__instance, safeIndex);
+            HostOnlyLobbyPlugin.LogSpawnRemap(originalIndex, safeIndex);
         }
     }
 

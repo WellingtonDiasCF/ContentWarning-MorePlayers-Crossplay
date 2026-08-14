@@ -1,36 +1,29 @@
-# More Players + Crossplay 1.1.0
+# More Players + Crossplay 1.2.0
 
-Esta versão adiciona uma confirmação visual para o host.
+Esta versão corrige o posicionamento local de jogadores que ocupam a quinta posição ou uma posição posterior.
 
-## Novo indicador
+## Spawns cobertos
 
-Ao entrar na sala ou carregar um novo mundo, aparece no canto superior direito:
+- entrada inicial na casa;
+- retorno à superfície dentro do sino;
+- renascimento no hospital.
 
-```text
-HOSTONLYLOBBY ATIVO
-Sala do host • até 8 jogadores
-```
+O subterrâneo já usa um ponto compartilhado e não precisa de remapeamento.
 
-O cartão permanece por 12 segundos, aparece somente para o host e mostra o limite configurado. A exibição e a duração podem ser alteradas no arquivo de configuração do plugin.
+## Grupo com 2 PCs e 3 Xbox
 
-## Instalação
+Instale o pacote no host e no segundo PC. O host cria a sala, os três Xbox entram primeiro e o segundo PC entra por último. Nada precisa ser instalado nos consoles.
 
-1. Baixe `HostOnlyLobby-Setup.exe` nos arquivos desta versão.
-2. Feche o Content Warning.
-3. Execute o instalador e clique em **Instalar / Atualizar**.
-4. Abra o jogo pela Steam e crie a sala normalmente.
-
-Somente o host instala. Os convidados de PC e Xbox entram pelo código normal.
+O jogo continua com quatro camas físicas. Quatro jogadores dormindo permitem avançar o dia; se houver menos de quatro sobreviventes, todos precisam dormir.
 
 ## Validação
 
-- indicador confirmado visualmente dentro de uma sala hospedada;
-- versão 1.1.0 carregada pelo BepInEx com 7/7 patches registrados;
-- 13/13 testes simulados aprovados;
+- compilação sem avisos ou erros;
+- 19/19 testes simulados aprovados contra o assembly da versão instalada do jogo;
+- patch de índice privado exercitado com um quinto jogador simulado;
+- inicialização real pela Steam com 8/8 patches registrados;
 - instalação e desinstalação verificadas em pasta isolada.
-
-Todos devem entrar antes de o host abrir a porta da casa. Voz e sincronização entre PC/Xbox continuam dependendo dos serviços do jogo.
 
 ## SHA-256
 
-`B8E0BB7D438BF11206419ED1EA243CAC6024BF0B83C1513A75B8DD8AB1ABE5DE`
+`7E7EC9AB2793F53CB7CB288E985BEDB700FBD9DCE7CBB8A7691290462F1EFB19`
