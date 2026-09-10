@@ -1,0 +1,10 @@
+{
+  "name": "MorePlayersCrossplay",
+  "version_number": "1.2.0",
+  "website_url": "https://github.com/WellingtonDiasCF/ContentWarning-MorePlayers-Crossplay",
+  "description": "Expands Content Warning lobbies to 5-16 players with PC/Xbox crossplay. PCs in slot 5+ need the mod for safe local spawns.",
+  "dependencies": [
+    "BepInEx-BepInExPack-5.4.2305",
+    "gingerphoenix10-CrossPatcher-1.0.0"
+  ]
+}
